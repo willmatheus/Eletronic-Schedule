@@ -2,7 +2,9 @@ import React from 'react'
 
 function Eventos() {
   return (
-    <div>Eventos</div>
+    <div className='container'>
+      <div className='title'><h1>Evento</h1></div>
+    </div>
   )
 }
 

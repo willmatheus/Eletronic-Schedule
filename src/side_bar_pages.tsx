@@ -7,27 +7,27 @@ const side_bar_pages = [
     {
         title: "Agenda Semanal",
         path: "/",
-        icon: <TbCalendarTime/>
+        icon: <TbCalendarTime size={22} color="#000"/>
     },
     {
         title: "Calendário",
         path: "/calendario",
-        icon: <TbCalendar/>
+        icon: <TbCalendar size={22} color="#000"/>
     },
     {
         title: "Tarefas",
         path: "/tarefas",
-        icon: <FaTasks/>
+        icon: <FaTasks size={22} color="#000"/>
     },
     {
         title: "Eventos",
         path: "/eventos",
-        icon: <BiParty/>
+        icon: <BiParty size={22} color="#000"/>
     },
     {
         title: "Reuniões",
         path: "/reunioes",
-        icon: <MdOutlineVideoCameraFront/>
+        icon: <MdOutlineVideoCameraFront size={22} color="#000"/>
     },
   ]
 

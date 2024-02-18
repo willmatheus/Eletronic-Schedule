@@ -11,27 +11,28 @@ function App() {
 
   return (
     <div className='App'>
-        <Routes>
-          <Route path='/' element = {<AgendaSemanal/>}></Route>
-          <Route path='/tarefas' element = {<Tarefas/>}></Route>
-          <Route path='/eventos' element = {<Eventos/>}></Route>
-          <Route path='/reunioes' element = {<Reunioes/>}></Route>
-          <Route path='/calendario' element = {<Calendario/>}></Route>
-        </Routes>
-
         <div className='sidebar-container'>
           <ul className='nav-list'>
             {side_bar_pages.map((item, index) => {
               return(
                 <li className='nav-item' key={index}>
-                  <NavLink to={item.path} className={({isActive}) => ["nav-link", isActive ? "active" : null].join(" ")}>
-                    <div className='nav-link-icon'>{item.icon}</div>
-                    <div className='icon-text'>{item.title}</div>
+                  <NavLink to={item.path} className="nav-link">
+                      <div className='nav-link-icon'>{item.icon}</div>
+                      <div className='icon-text'>{item.title}</div>
                   </NavLink>
                 </li>
               )
             })}
           </ul>
+        </div>
+        <div className='content'>
+          <Routes>
+            <Route path='/' element = {<AgendaSemanal/>}></Route>
+            <Route path='/tarefas' element = {<Tarefas/>}></Route>
+            <Route path='/eventos' element = {<Eventos/>}></Route>
+            <Route path='/reunioes' element = {<Reunioes/>}></Route>
+            <Route path='/calendario' element = {<Calendario/>}></Route>
+          </Routes>
         </div>
     </div>
   )
