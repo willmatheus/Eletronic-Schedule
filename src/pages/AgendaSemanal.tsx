@@ -45,9 +45,11 @@ function AgendaSemanal() {
         {/*Eventos*/}
         <ActivityContainer>
           <p>Eventos</p>
-          <ul>
-            <Cards/>
-          </ul>
+          <div className='list-container'>
+            <ul>
+              <Cards/>
+            </ul>
+          </div>
         </ActivityContainer>
 
         {/*Reuniões*/}

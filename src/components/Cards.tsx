@@ -1,13 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
-import { TaskProps } from '../types/tasks'
+import ShowTask from '../pages/Tasks/ShowTask'
 
-const Card = styled.div`
+import { ModalClose, Modal} from '@mui/joy';
+
+const Card = styled.button`
     background-color: white;
     padding-bottom: 10px;
     padding-top: 10px;
     padding-left: 20px;
     padding-right: 20px;
+    outline: none;
+    border: none;
+    width: 100%;
+    cursor: pointer;
 `
 
 const CardHead = styled.div`
@@ -15,6 +21,7 @@ const CardHead = styled.div`
 `
 
 const CardData = styled.h3`
+    float: left;
     font-size: 12px;
     color: #6B6B6B;
     margin-top: 10px;
@@ -52,20 +59,48 @@ const handleColorStatus: (color : string | any) => string =
         }
     }
 
-function Cards() {
-  return (
-    <>
-            <Card>
-                <CardHead>
-                    <CardTitle>Estudar para a prova de redes</CardTitle>
-                    <Status color='Concluído'>Concluído</Status>
-                </CardHead>
 
-                <CardData>4 de janeiro</CardData>
+type CardsProps = {
+    activity : string
+}
 
-            </Card>
-    </>
-  )
+
+function Cards({activity} : CardsProps) {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    return (
+        <>
+        <Card onClick={handleOpen}>
+            <CardHead>
+                <CardTitle>Estudar para a prova de redes</CardTitle>
+                <Status color='Concluído'>Concluído</Status>
+            </CardHead>
+            <CardData>4 de janeiro</CardData>
+
+        </Card>
+
+        <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            {handleOption(activity)}
+        
+        </Modal>
+        </>
+    )
+}
+
+function handleOption (activity : string) : any{
+    switch(activity){
+        case 'task':
+            return <ShowTask/>
+        default:
+            return <ShowTask/>
+    }
 }
 
 export default Cards

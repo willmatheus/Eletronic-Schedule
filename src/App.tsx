@@ -1,7 +1,7 @@
 import {Routes, Route, NavLink} from 'react-router-dom'
 import side_bar_pages from './side_bar_pages'
 import AgendaSemanal from './pages/AgendaSemanal'
-import Tarefas from './pages/Tarefas'
+import Tarefas from './pages/Tasks/Tarefas'
 import Eventos from './pages/Eventos'
 import Calendario from './pages/Calendario'
 import Reunioes from './pages/Reunioes'
