@@ -1,0 +1,35 @@
+.location-container{
+    width: 100%;
+    padding-top: 10px;
+}
+
+.location-description{
+    width: 400px;
+    margin-left: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.location-description:focus{
+    outline: none;
+}
+
+.location-icon{
+    vertical-align:middle;
+}
+
+.guests-icon{
+    vertical-align:middle;
+    margin-left: 40px;
+    margin-right: 10px;
+}
+
+.input-guests{
+    width: 80px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.input-guests:focus{
+    outline: none;
+}

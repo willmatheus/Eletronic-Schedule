@@ -1,8 +1,8 @@
 import {Routes, Route, NavLink} from 'react-router-dom'
 import side_bar_pages from './side_bar_pages'
 import AgendaSemanal from './pages/AgendaSemanal'
-import Tarefas from './pages/Tasks/Tarefas'
-import Eventos from './pages/Eventos'
+import Tasks from './pages/Tasks/Tasks'
+import Events from './pages/Events/Events'
 import Calendario from './pages/Calendario'
 import Reunioes from './pages/Reunioes'
 import './App.css'
@@ -28,8 +28,8 @@ function App() {
         <div className='content'>
           <Routes>
             <Route path='/' element = {<AgendaSemanal/>}></Route>
-            <Route path='/tarefas' element = {<Tarefas/>}></Route>
-            <Route path='/eventos' element = {<Eventos/>}></Route>
+            <Route path='/tarefas' element = {<Tasks/>}></Route>
+            <Route path='/eventos' element = {<Events/>}></Route>
             <Route path='/reunioes' element = {<Reunioes/>}></Route>
             <Route path='/calendario' element = {<Calendario/>}></Route>
           </Routes>
