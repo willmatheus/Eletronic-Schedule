@@ -1,6 +1,6 @@
 import React from 'react'
 import '../pagesStyles.css'
-import './events.css'
+import './events_activity.css'
 import {MdAdd, MdLocationOn, MdOutlinePeople } from "react-icons/md";
 import styled from 'styled-components'
 import FloatingButton from '../../components/FloatingButton';
@@ -48,7 +48,7 @@ const ButtonsBar = styled.div`
   float: right;
 `
 
-function Events() {
+function Events_Activity() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -122,4 +122,4 @@ function Events() {
   )
 }
 
-export default Events
+export default Events_Activity

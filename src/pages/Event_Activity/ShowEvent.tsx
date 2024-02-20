@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './events.css'
+import './events_activity.css'
 import styled from 'styled-components';
 import { MdOutlineDelete, MdLocationOn, MdOutlinePeople} from "react-icons/md";
 import { RiErrorWarningLine } from "react-icons/ri";

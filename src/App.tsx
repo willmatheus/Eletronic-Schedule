@@ -2,8 +2,8 @@ import {Routes, Route, NavLink} from 'react-router-dom'
 import side_bar_pages from './side_bar_pages'
 import AgendaSemanal from './pages/AgendaSemanal'
 import Tasks from './pages/Tasks/Tasks'
-import Events from './pages/Events/Events'
-import Calendario from './pages/Calendario'
+import Events_Activity from './pages/Event_Activity/Events_Activity'
+import CalendarManager from './pages/Calendar/CalendarManager'
 import Meetings from './pages/Meetings/Meetings'
 import './App.css'
 
@@ -29,9 +29,9 @@ function App() {
           <Routes>
             <Route path='/' element = {<AgendaSemanal/>}></Route>
             <Route path='/tarefas' element = {<Tasks/>}></Route>
-            <Route path='/eventos' element = {<Events/>}></Route>
+            <Route path='/eventos' element = {<Events_Activity/>}></Route>
             <Route path='/reunioes' element = {<Meetings/>}></Route>
-            <Route path='/calendario' element = {<Calendario/>}></Route>
+            <Route path='/calendario' element = {<CalendarManager/>}></Route>
           </Routes>
         </div>
     </div>

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import ShowTask from '../pages/Tasks/ShowTask'
 
 import { Modal} from '@mui/joy';
-import ShowEvent from '../pages/Events/ShowEvent';
+import ShowEvent from '../pages/Event_Activity/ShowEvent';
 import ShowMeeting from '../pages/Meetings/ShowMeeting';
 
 const Card = styled.button`
