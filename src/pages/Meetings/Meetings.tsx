@@ -1,7 +1,7 @@
 import React from 'react'
 import '../pagesStyles.css'
-import './events.css'
-import {MdAdd, MdLocationOn, MdOutlinePeople } from "react-icons/md";
+import './meetings.css'
+import {MdAdd} from "react-icons/md";
 import styled from 'styled-components'
 import FloatingButton from '../../components/FloatingButton';
 import Button from '../../components/Button';
@@ -48,7 +48,7 @@ const ButtonsBar = styled.div`
   float: right;
 `
 
-function Events() {
+function Meetings() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -57,12 +57,12 @@ function Events() {
 
   return (
     <div className='container'>
-      <div className='title'><h1>Eventos</h1></div>
+      <div className='title'><h1>Reuniões</h1></div>
 
       <div className='activities-container'>
 
         <div className='list-container'>
-            <Cards activity='event'/>
+            <Cards activity='meeting'/>
         </div>
 
       </div>
@@ -77,8 +77,7 @@ function Events() {
       >
         <Box sx={style}>
           <Input aria-label="Demo input" placeholder="Título" />
-          <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição…" color='primary'/>
-          
+
           <ThemeProvider theme={theme}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={['DatePicker', 'TimeField']}>
@@ -99,15 +98,11 @@ function Events() {
             </LocalizationProvider>
             
           </ThemeProvider>
-
-          <div className='location-container'>
-            <MdLocationOn size={30} color='#5F22D9' className='location-icon'/>
-            <input className='location-description' placeholder='Adicione uma localização...'/>
-
-            <p className='text-guests'>Nº convidados</p>
-            <MdOutlinePeople size={30} color='#5F22D9' className='guests-icon'/>
-            <input className='input-guests' placeholder='0' type='number'/>
-          </div>
+                      
+          <Textarea aria-label="empty textarea" maxRows={7} placeholder='Adicione uma pauta para a reunião...'/>
+          <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição..."/>
+          
+          <input className='link-meeting' placeholder='Adicione um link para a reunião...'/>
           
           <ButtonsBar>
               <Button id="btn-close" color='secondary' onClick={handleClose}>Cancelar</Button>
@@ -122,4 +117,4 @@ function Events() {
   )
 }
 
-export default Events
+export default Meetings

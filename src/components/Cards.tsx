@@ -2,7 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import ShowTask from '../pages/Tasks/ShowTask'
 
-import { ModalClose, Modal} from '@mui/joy';
+import { Modal} from '@mui/joy';
+import ShowEvent from '../pages/Events/ShowEvent';
+import ShowMeeting from '../pages/Meetings/ShowMeeting';
 
 const Card = styled.button`
     background-color: white;
@@ -98,6 +100,10 @@ function handleOption (activity : string) : any{
     switch(activity){
         case 'task':
             return <ShowTask/>
+        case 'event':
+            return <ShowEvent/>
+        case 'meeting':
+            return <ShowMeeting/>
         default:
             return <ShowTask/>
     }

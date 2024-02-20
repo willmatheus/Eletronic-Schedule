@@ -47,7 +47,7 @@ function AgendaSemanal() {
           <p>Eventos</p>
           <div className='list-container'>
             <ul>
-              <Cards/>
+              <Cards activity='eventos'/>
             </ul>
           </div>
         </ActivityContainer>

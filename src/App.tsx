@@ -4,7 +4,7 @@ import AgendaSemanal from './pages/AgendaSemanal'
 import Tasks from './pages/Tasks/Tasks'
 import Events from './pages/Events/Events'
 import Calendario from './pages/Calendario'
-import Reunioes from './pages/Reunioes'
+import Meetings from './pages/Meetings/Meetings'
 import './App.css'
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
             <Route path='/' element = {<AgendaSemanal/>}></Route>
             <Route path='/tarefas' element = {<Tasks/>}></Route>
             <Route path='/eventos' element = {<Events/>}></Route>
-            <Route path='/reunioes' element = {<Reunioes/>}></Route>
+            <Route path='/reunioes' element = {<Meetings/>}></Route>
             <Route path='/calendario' element = {<Calendario/>}></Route>
           </Routes>
         </div>

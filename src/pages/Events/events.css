@@ -1,13 +1,18 @@
 .location-container{
     width: 100%;
     padding-top: 10px;
+    display: flex;
+    padding-bottom: 20px;
 }
 
 .location-description{
-    width: 400px;
+    width: 300px;
     margin-left: 5px;
     padding: 8px 12px;
     font-size: 14px;
+    border: 1px solid #5F22D9;
+    box-sizing: border-box;
+    border-radius: 5px;
 }
 
 .location-description:focus{
@@ -20,7 +25,7 @@
 
 .guests-icon{
     vertical-align:middle;
-    margin-left: 40px;
+    margin-left: 10px;
     margin-right: 10px;
 }
 
@@ -28,8 +33,19 @@
     width: 80px;
     padding: 8px 12px;
     font-size: 14px;
+    border: 1px solid #5F22D9;
+    box-sizing: border-box;
+    border-radius: 5px;
 }
 
 .input-guests:focus{
     outline: none;
+}
+
+.text-guests{
+    color: black;
+    font-size: 12px;
+    margin-left: 20px;
+    text-align: center;
+    line-height: 35px;
 }

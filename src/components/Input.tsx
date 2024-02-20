@@ -9,6 +9,7 @@ const InputElement = mui_styled('input')`
   font-weight: normal;
   line-height: 1.5;
   padding: 8px 12px;
+  padding-left: 0px;
   border-radius: 8px;
   outline: none;
   border: 0px;

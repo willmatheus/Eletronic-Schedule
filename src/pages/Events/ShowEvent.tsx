@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import './task.css'
+import './events.css'
 import styled from 'styled-components';
-import { MdOutlineDelete, MdUploadFile, MdClose } from "react-icons/md";
+import { MdOutlineDelete, MdLocationOn, MdOutlinePeople} from "react-icons/md";
 import { RiErrorWarningLine } from "react-icons/ri";
 //import { FaRegFileAlt } from "react-icons/fa";
 
@@ -75,28 +75,9 @@ const Delete_styled = styled.button`
   margin-right: 5px;
   padding-bottom: 3px;
 `
-const Upload_styled = styled.input`
-  width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
-`
 
-const FileDiv = styled.div`
-  background-color: #EDE4FF;
-  margin: auto;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  width: fit-content;
-`
-
-
-function ShowTask() {
-  
+function ShowEvent() {
+    
   const description = "Lorem ipsum dolor sit amet. Id error maiores eum distinctio dolorum est cumque officiis vel culpa minima et consectetur nisi. Et sint nihil cum voluptate ratione a voluptas dicta et corrupti consequatur ut illo praesentium est amet recusandae aut pariatur iure. Eos earum alias rem cupiditate sequi aut nihil necessitatibus! Non placeat voluptas sit corporis ipsum At deleniti cumque At maiores molestiae eos eligendi dicta et minima assumenda qui expedita mollitia."
 
   //Puxar do banco a data e o horário
@@ -105,27 +86,24 @@ function ShowTask() {
 
   const [open, setOpen] = React.useState<boolean>(false);
 
-  //const [file, setFile] = useState<File | null>(null);
-
-  /*
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
-  };
-  */
-
   return (
     <Sheet sx={style}>
       {/*Tela de visualizar Card/ Alterar tarefa*/}
       <BoxHeader>
-        {/*Status da Tarefa através do checkbox*/}
-        <Checkbox aria-label ='Checkbox demo' sx={{ padding : '0px'} }/>
 
         {/*Título da tarefa em default value*/}
-        <Input aria-label="Demo input" placeholder="Título" defaultValue={"Estudar para a prova de redes"} />
+        <Input aria-label="Demo input" placeholder="Título" defaultValue={"Festa de natal na minha casa"} />
         <ModalClose variant="plain" sx={{ m: 1 }} />
       </BoxHeader>
+
+      <div className='location-container'>
+            <MdLocationOn size={30} color='#5F22D9' className='location-icon'/>
+            <input className='location-description' placeholder='Adicione uma localização...' defaultValue={"Avenida Penetração, 45"}/>
+
+            <p className='text-guests'>Nº convidados</p>
+            <MdOutlinePeople size={30} color='#5F22D9' className='guests-icon'/>
+            <input className='input-guests' placeholder='0' type='number' defaultValue={4}/>
+      </div>
 
       <ThemeProvider theme={theme}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -180,7 +158,7 @@ function ShowTask() {
                     </DialogTitle>
                     <Divider />
                     <DialogContent>
-                      Você deseja excluir essa tarefa?
+                      Você deseja excluir esse evento?
                     </DialogContent>
                     <DialogActions>
                       <Button color="primary">
@@ -207,4 +185,4 @@ function ShowTask() {
   )
 }
 
-export default ShowTask
+export default ShowEvent
