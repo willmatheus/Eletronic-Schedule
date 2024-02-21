@@ -14,7 +14,7 @@ router.post('/tarefas', taskController.createTask);
 
 router.delete('/tarefas/:id', taskController.deleteTask);
 
-router.put('/tarefas/:id', taskController.updatetask);
+router.put('/tarefas/:id', taskController.updateTask);
 
 // events
 router.get('/eventos', eventController.showAllEvents);

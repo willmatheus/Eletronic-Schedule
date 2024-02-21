@@ -2,10 +2,16 @@ import React from 'react'
 import '../pagesStyles.css'
 import { MdAddTask } from "react-icons/md";
 import styled from 'styled-components'
+
 import FloatingButton from '../../components/FloatingButton';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Textarea from '../../components/TextArea';
+import Cards from '../../components/Cards';
+
+import { api } from '../../services/api'
+import { useEffect, useState } from 'react'
+import { TaskProps } from '../../types/tasks'
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -18,7 +24,6 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ptBR } from '@mui/x-date-pickers/locales';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
 import dayjs, { Dayjs } from 'dayjs';
-import Cards from '../../components/Cards';
 
 const theme = createTheme(
   {
@@ -48,6 +53,20 @@ const ButtonsBar = styled.div`
 `
 
 function Tarefas() {
+
+  const [tasks, setTasks] = useState<TaskProps[]>([])
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+  async function loadTasks() {
+    const response = await api.get('/tarefas');
+    setTasks(response.data);
+    console.log(response.data);
+  }
+
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -67,7 +86,7 @@ function Tarefas() {
         </div>
 
         <div className='list-container'>
-            <Cards activity='task'/>
+            <Cards activity_name='task' activity={tasks}/>
         </div>
 
       </div>

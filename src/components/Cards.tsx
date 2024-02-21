@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import ShowTask from '../pages/Tasks/ShowTask'
+import { TaskProps } from '../types/tasks'; 
 
 import { ModalClose, Modal} from '@mui/joy';
 
@@ -48,11 +49,11 @@ const CardTitle = styled.h2`
 const handleColorStatus: (color : string | any) => string =
     function(color : string | any){
         switch(color){
-            case "Pendente":
+            case "pendente":
                 return "#C82B28"
-            case "Concluído":
+            case "concluido":
                 return "#28C842"
-            case "Em breve":
+            case "m breve":
                 return "#C82B28"
             default:
                 return "#C82B28"
@@ -61,41 +62,46 @@ const handleColorStatus: (color : string | any) => string =
 
 
 type CardsProps = {
-    activity : string
+    activity_name : string;
+    activity: TaskProps[];
 }
 
 
-function Cards({activity} : CardsProps) {
+function Cards({activity_name, activity} : CardsProps) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     return (
-        <>
-        <Card onClick={handleOpen}>
-            <CardHead>
-                <CardTitle>Estudar para a prova de redes</CardTitle>
-                <Status color='Concluído'>Concluído</Status>
-            </CardHead>
-            <CardData>4 de janeiro</CardData>
+        <div>
+        {activity.map((activity)=>(
+            <div key={activity.id}>
+            <Card onClick={handleOpen}>
+                <CardHead>
+                    <CardTitle>{activity.titulo}</CardTitle>
+                    <Status color={activity.status}>{activity.status}</Status>
+                </CardHead>
+                <CardData>{activity.data}</CardData>
 
-        </Card>
+            </Card>
 
-        <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
-            {handleOption(activity)}
-        
-        </Modal>
-        </>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                {handleOption(activity_name)}
+            
+            </Modal>
+            </div>
+        ))}
+    </div>
     )
 }
 
-function handleOption (activity : string) : any{
-    switch(activity){
+function handleOption (activity_name : string) : any{
+    switch(activity_name){
         case 'task':
             return <ShowTask/>
         default:

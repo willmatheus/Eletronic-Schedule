@@ -9,8 +9,9 @@ export const showAllTasks = async () => {
 }
 
 export const createTask = async (task) => {
-    const { data, titulo, horario, descricao, status } = task;
+    const { data, titulo, horario, descricao } = task;
     const id = uuidv4();
+    const status = 'pendente';
 
     const query = 'INSERT INTO Tarefas (id, data, titulo, horario, descricao, status) VALUES (?, ?, ?, ?, ?, ?)';
 

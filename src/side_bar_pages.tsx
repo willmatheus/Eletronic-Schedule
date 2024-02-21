@@ -1,17 +1,12 @@
-import { TbCalendarTime, TbCalendar, } from  'react-icons/tb'
+import { TbCalendar, } from  'react-icons/tb'
 import { BiParty } from "react-icons/bi";
 import { MdOutlineVideoCameraFront } from "react-icons/md";
 import { FaTasks } from "react-icons/fa";
 
 const side_bar_pages = [
     {
-        title: "Agenda Semanal",
-        path: "/",
-        icon: <TbCalendarTime size={22} color="#000"/>
-    },
-    {
         title: "Calendário",
-        path: "/calendario",
+        path: "/",
         icon: <TbCalendar size={22} color="#000"/>
     },
     {
