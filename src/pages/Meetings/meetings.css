@@ -1,0 +1,14 @@
+.link-meeting{
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #5F22D9;
+    box-sizing: border-box;
+    margin-top: 20px;
+}
+
+.link-meeting:focus{
+    border: 1px solid #5F22D9;
+    outline: none;
+}

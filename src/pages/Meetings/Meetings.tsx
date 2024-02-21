@@ -1,17 +1,12 @@
 import React from 'react'
 import '../pagesStyles.css'
-import { MdAddTask } from "react-icons/md";
+import './meetings.css'
+import {MdAdd} from "react-icons/md";
 import styled from 'styled-components'
-
 import FloatingButton from '../../components/FloatingButton';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Textarea from '../../components/TextArea';
-import Cards from '../../components/Cards';
-
-import { api } from '../../services/api'
-import { useEffect, useState } from 'react'
-import { TaskProps } from '../../types/tasks'
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -24,6 +19,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ptBR } from '@mui/x-date-pickers/locales';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
 import dayjs, { Dayjs } from 'dayjs';
+import Cards from '../../components/Cards';
 
 const theme = createTheme(
   {
@@ -52,21 +48,7 @@ const ButtonsBar = styled.div`
   float: right;
 `
 
-function Tarefas() {
-
-  const [tasks, setTasks] = useState<TaskProps[]>([])
-
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  async function loadTasks() {
-    const response = await api.get('/tarefas');
-    setTasks(response.data);
-    console.log(response.data);
-  }
-
-
+function Meetings() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -75,23 +57,17 @@ function Tarefas() {
 
   return (
     <div className='container'>
-      <div className='title'><h1>Tarefas</h1></div>
+      <div className='title'><h1>Reuniões</h1></div>
 
       <div className='activities-container'>
 
-        <div className='filter-container'>
-          <button className='btn-filter'><h3>Todas as tarefas</h3></button>
-          <button className='btn-filter active'><h3>Minhas tarefas</h3></button>
-          <button className='btn-filter'><h3>Tarefas Convidadas</h3></button>
-        </div>
-
         <div className='list-container'>
-            <Cards activity_name='task' activity={tasks}/>
+            <Cards activity_name='meeting' activity={[]}/>
         </div>
 
       </div>
 
-      <FloatingButton onClick={handleOpen}><MdAddTask size={30}/></FloatingButton>
+      <FloatingButton onClick={handleOpen}><MdAdd size={30}/></FloatingButton>
 
       <Modal
         open={open}
@@ -101,8 +77,7 @@ function Tarefas() {
       >
         <Box sx={style}>
           <Input aria-label="Demo input" placeholder="Título" />
-          <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição…" color='primary'/>
-          
+
           <ThemeProvider theme={theme}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={['DatePicker', 'TimeField']}>
@@ -123,6 +98,11 @@ function Tarefas() {
             </LocalizationProvider>
             
           </ThemeProvider>
+                      
+          <Textarea aria-label="empty textarea" maxRows={7} placeholder='Adicione uma pauta para a reunião...'/>
+          <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição..."/>
+          
+          <input className='link-meeting' placeholder='Adicione um link para a reunião...'/>
           
           <ButtonsBar>
               <Button id="btn-close" color='secondary' onClick={handleClose}>Cancelar</Button>
@@ -137,4 +117,4 @@ function Tarefas() {
   )
 }
 
-export default Tarefas
+export default Meetings

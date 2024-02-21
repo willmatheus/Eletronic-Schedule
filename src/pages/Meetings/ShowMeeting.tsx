@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
+import './meetings.css'
 import styled from 'styled-components';
-import { MdOutlineDelete, MdUploadFile, MdClose } from "react-icons/md";
+import { MdOutlineDelete} from "react-icons/md";
 import { RiErrorWarningLine } from "react-icons/ri";
-//import { FaRegFileAlt } from "react-icons/fa";
 
 import Input from '../../components/Input';
 import Textarea from '../../components/TextArea';
 import Button from '../../components/Button';
 
-import { Checkbox, TextField } from '@mui/material';
 import { ModalClose, Modal} from '@mui/joy';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -74,55 +73,24 @@ const Delete_styled = styled.button`
   margin-right: 5px;
   padding-bottom: 3px;
 `
-const Upload_styled = styled.input`
-  width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
-`
 
-const FileDiv = styled.div`
-  background-color: #EDE4FF;
-  margin: auto;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  width: fit-content;
-`
-
-
-function ShowTask() {
-  
+function ShowMeeting() {
+    
   const description = "Lorem ipsum dolor sit amet. Id error maiores eum distinctio dolorum est cumque officiis vel culpa minima et consectetur nisi. Et sint nihil cum voluptate ratione a voluptas dicta et corrupti consequatur ut illo praesentium est amet recusandae aut pariatur iure. Eos earum alias rem cupiditate sequi aut nihil necessitatibus! Non placeat voluptas sit corporis ipsum At deleniti cumque At maiores molestiae eos eligendi dicta et minima assumenda qui expedita mollitia."
 
   //Puxar do banco a data e o horário
-  const [hour, setHour] = React.useState<Dayjs | null>(dayjs('2024-02-19T15:00'));
-  const [date, setDate] = React.useState<Dayjs | null>(dayjs('2024-02-19'));
+  const [hour, setHour] = useState<Dayjs | null>(dayjs('2024-02-19T15:00'));
+  const [date, setDate] = useState<Dayjs | null>(dayjs('2024-02-19'));
 
-  const [open, setOpen] = React.useState<boolean>(false);
-
-  //const [file, setFile] = useState<File | null>(null);
-
-  /*
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
-  };
-  */
+  const [open, setOpen] = useState<boolean>(false);
 
   return (
     <Sheet sx={style}>
       {/*Tela de visualizar Card/ Alterar tarefa*/}
       <BoxHeader>
-        {/*Status da Tarefa através do checkbox*/}
-        <Checkbox aria-label ='Checkbox demo' sx={{ padding : '0px'} }/>
 
         {/*Título da tarefa em default value*/}
-        <Input aria-label="Demo input" placeholder="Título" defaultValue={"Estudar para a prova de redes"} />
+        <Input aria-label="Demo input" placeholder="Título" defaultValue={"Festa de natal na minha casa"} />
         <ModalClose variant="plain" sx={{ m: 1 }} />
       </BoxHeader>
 
@@ -150,8 +118,10 @@ function ShowTask() {
       </ThemeProvider>
       
       {/*Texto da descrição, mudar o campo default value*/}
-      <Textarea aria-label="empty textarea" maxRows={7} defaultValue={description} color='primary'/>
+      <Textarea aria-label="empty textarea" maxRows={7} defaultValue={'Daily Scrum'} color='primary' placeholder='Adicione uma pauta para a reunião...'/>
+      <Textarea aria-label="empty textarea" maxRows={7} defaultValue={description} color='primary' placeholder='Adicione uma descrição...'/>
       
+      <input className='link-meeting' placeholder='Adicione um link para a reunião...' value={'https://meet.google.com/kdc-yuxc-ydm'}/>
       {/*file && (
         <FileDiv>
             <FaRegFileAlt size={30}/>
@@ -179,7 +149,7 @@ function ShowTask() {
                     </DialogTitle>
                     <Divider />
                     <DialogContent>
-                      Você deseja excluir essa tarefa?
+                      Você deseja excluir esse evento?
                     </DialogContent>
                     <DialogActions>
                       <Button color="primary">
@@ -206,4 +176,4 @@ function ShowTask() {
   )
 }
 
-export default ShowTask
+export default ShowMeeting

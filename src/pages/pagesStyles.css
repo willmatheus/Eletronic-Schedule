@@ -32,30 +32,6 @@ h3{
     font-weight: normal;
 }
 
-.filter-container{
-    width: 500px;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-items: center;
-}
-
-.btn-filter{
-    background-color: #C3C3C3;
-    border: none;
-    outline: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    margin-right: 10px;
-    margin-top: 12px;
-    color: #3F3F3F;
-}
-
-.btn-filter.active{
-    background-color: #51D6CA;
-    color: black;
-}
-
 .list-container{
     padding-top: 20px;
     padding-bottom: 10px;

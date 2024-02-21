@@ -9,7 +9,9 @@ const Textarea = mui_styled(BaseTextareaAutosize)`
   line-height: 1.5rem;
   padding: 8px 12px;
   border-radius: 8px 8px 0 8px;
-  margin-top: 10px;
+  margin-top: 20px;
+  border: 1px solid #5F22D9;
+  box-sizing: border-box;
 
   &:hover {
     outline: none;

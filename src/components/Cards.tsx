@@ -1,9 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import ShowTask from '../pages/Tasks/ShowTask'
+import ShowEvent from '../pages/Event_Activity/ShowEvent';
+import ShowMeeting from '../pages/Meetings/ShowMeeting';
 import { TaskProps } from '../types/tasks'; 
 
-import { ModalClose, Modal} from '@mui/joy';
+import { Modal} from '@mui/joy';
 
 const Card = styled.button`
     background-color: white;
@@ -13,8 +15,11 @@ const Card = styled.button`
     padding-right: 20px;
     outline: none;
     border: none;
+    outline: none;
+    border: none;
     width: 100%;
     cursor: pointer;
+    margin-bottom: 10px;
 `
 
 const CardHead = styled.div`
@@ -53,8 +58,6 @@ const handleColorStatus: (color : string | any) => string =
                 return "#C82B28"
             case "concluido":
                 return "#28C842"
-            case "m breve":
-                return "#C82B28"
             default:
                 return "#C82B28"
         }
@@ -104,6 +107,10 @@ function handleOption (activity_name : string) : any{
     switch(activity_name){
         case 'task':
             return <ShowTask/>
+        case 'event':
+            return <ShowEvent/>
+        case 'meeting':
+            return <ShowMeeting/>
         default:
             return <ShowTask/>
     }
