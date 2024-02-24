@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect, useState, FormEvent, useRef, ChangeEvent} from 'react'
 import '../pagesStyles.css'
 import { MdAdd } from "react-icons/md";
 import styled from 'styled-components'
@@ -10,7 +10,6 @@ import Textarea from '../../components/TextArea';
 import Cards from '../../components/Cards';
 
 import { api } from '../../services/api'
-import { useEffect, useState } from 'react'
 import { TaskProps } from '../../types/tasks'
 
 import Box from '@mui/material/Box';
@@ -24,6 +23,8 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ptBR } from '@mui/x-date-pickers/locales';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
 import dayjs, { Dayjs } from 'dayjs';
+import { set } from 'date-fns';
+import { ModalTaskProvider } from '../../context/modalTask';
 
 const theme = createTheme(
   {
@@ -56,6 +57,15 @@ function Tasks() {
 
   const [tasks, setTasks] = useState<TaskProps[]>([])
 
+  const tituloRef = useRef<HTMLInputElement | null> (null)
+  const descricaoRef = useRef<HTMLTextAreaElement | null> (null)
+  const dataRef = useRef<HTMLInputElement | null> (null)
+  const horarioRef = useRef<HTMLInputElement | null> (null)
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   useEffect(() => {
     loadTasks();
   }, []);
@@ -63,15 +73,28 @@ function Tasks() {
   async function loadTasks() {
     const response = await api.get('/tarefas');
     setTasks(response.data);
-    console.log(response.data);
+    //console.log(response.data);
   }
 
+  async function handleSubmit(event:FormEvent){
+    event.preventDefault()
 
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+    if(!tituloRef.current?.value || !dataRef.current?.value || !horarioRef.current?.value) return
 
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
+
+    const response =  await api.post('/tarefas', {
+      'data': dataRef.current?.value, 
+      'titulo': tituloRef.current?.value,
+      'horario': horarioRef.current?.value,
+      'descricao': descricaoRef.current?.value
+    });
+
+    setTasks(allTasks => [...allTasks, response.data])
+
+    setOpen(false)
+  }
+
+  const [value, setValue] = useState<Dayjs | null>(dayjs('2024-02-26T15:30'));
 
   return (
     <div className='container'>
@@ -80,7 +103,10 @@ function Tasks() {
       <div className='activities-container'>
 
         <div className='list-container'>
-            <Cards activity_name='task' activity={tasks}/>
+          
+          <ModalTaskProvider>
+            <Cards activity_name='task' activities={tasks}/>
+          </ModalTaskProvider>
         </div>
 
       </div>
@@ -94,35 +120,37 @@ function Tasks() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Input aria-label="Demo input" placeholder="Título" />
-          <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição…" color='primary'/>
-          
-          <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker', 'TimeField']}>
-                <MobileDatePicker label="Selecione uma data" slotProps={{ 
-                  textField: {size: 'small', color: 'primary'}
-                  }}/>
+          <form onSubmit={handleSubmit} id='register-task'>
+              <Input placeholder="Título" ref={tituloRef}/>
+              <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição…" color='primary' ref={descricaoRef}/>
+              
+              <ThemeProvider theme={theme}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker', 'TimeField']}>
+                    <MobileDatePicker label="Selecione uma data" slotProps={{ 
+                      textField: {size: 'small', color: 'primary'}
+                      }} inputRef={dataRef} defaultValue={dayjs('2024-02-19')}/>
+                    
+                    <TimeField ampm={false}
+                      label="Selecione um horário"
+                      value={value}
+                      onChange={(newValue) => setValue(newValue)}
+                      slotProps={{ 
+                        textField: {size: 'small', color: 'primary'}
+                        }} inputRef={horarioRef}
+                    />
+                    
+                  </DemoContainer>
+                </LocalizationProvider>
                 
-                <TimeField
-                  label="Selecione um horário"
-                  value={value}
-                  onChange={(newValue) => setValue(newValue)}
-                  slotProps={{ 
-                    textField: {size: 'small', color: 'primary'}
-                    }}
-                />
-                
-              </DemoContainer>
-            </LocalizationProvider>
-            
-          </ThemeProvider>
-          
-          <ButtonsBar>
-              <Button id="btn-close" color='secondary' onClick={handleClose}>Cancelar</Button>
-              <Button color='primary'>Salvar</Button>
+              </ThemeProvider>
+
+              <ButtonsBar>
+                  <Button id="btn-close" color='secondary' onClick={handleClose}>Cancelar</Button>
+                  <Button color='primary' type='submit' form="register-task" value="Salvar">Salvar</Button>
             </ButtonsBar>
 
+            </form>
         </Box>
         
       </Modal>

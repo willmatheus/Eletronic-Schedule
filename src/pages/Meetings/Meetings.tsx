@@ -62,7 +62,7 @@ function Meetings() {
       <div className='activities-container'>
 
         <div className='list-container'>
-            <Cards activity_name='meeting' activity={[]}/>
+            <Cards activity_name='meeting' activities={[]}/>
         </div>
 
       </div>

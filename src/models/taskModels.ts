@@ -4,6 +4,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const showAllTasks = async () => {
     const [allTasks] = await connection.execute('SELECT * FROM Tarefas');
+    const dateUTC = new Date(Date.now()).toLocaleDateString();
+
+    for (let i = 0; i < allTasks.length; i++)   {
+        if (allTasks[i].data === dateUTC) {
+            allTasks[i].status = 'concluida';
+        }
+    }
 
     return allTasks;
 }
@@ -15,9 +22,16 @@ export const createTask = async (task) => {
 
     const query = 'INSERT INTO Tarefas (id, data, titulo, horario, descricao, status) VALUES (?, ?, ?, ?, ?, ?)';
 
-    const [createdTask] = await connection.execute(query, [id, data, titulo, horario, descricao, status]);
+    await connection.execute(query, [id, data, titulo, horario, descricao, status]);
 
-    return createdTask;
+    return {
+        id,
+        data,
+        titulo,
+        horario,
+        descricao,
+        status
+    };
 }
 
 export const deleteTask = async (id) => {

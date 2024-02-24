@@ -62,7 +62,7 @@ function Events_Activity() {
       <div className='activities-container'>
 
         <div className='list-container'>
-            <Cards activity_name='event' activity={[]}/>
+            <Cards activity_name='event' activities={[]}/>
         </div>
 
       </div>

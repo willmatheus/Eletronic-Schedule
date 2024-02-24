@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import ShowTask from '../pages/Tasks/ShowTask'
 import ShowEvent from '../pages/Event_Activity/ShowEvent';
 import ShowMeeting from '../pages/Meetings/ShowMeeting';
 import { TaskProps } from '../types/tasks'; 
+import {useModalTask} from '../context/modalTask'
 
 import { Modal} from '@mui/joy';
 
@@ -66,54 +67,54 @@ const handleColorStatus: (color : string | any) => string =
 
 type CardsProps = {
     activity_name : string;
-    activity: TaskProps[];
+    activities: TaskProps[];
 }
 
-
-function Cards({activity_name, activity} : CardsProps) {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+function Cards({activity_name, activities} : CardsProps) {
+    const [currentActivity, setCurrentActivity] = useState<TaskProps>()
+    const { openTask, handleOpenTask, handleCloseTask } = useModalTask();
+    
+    function handleOpen (activityItem : TaskProps) {
+        setCurrentActivity(activityItem);
+        handleOpenTask()
+    } 
+    function handleOption (activity_name : string, activity: TaskProps) : any{
+        switch(activity_name){
+            case 'task':
+                return <ShowTask task= {activity}/>
+            case 'event':
+                return <ShowEvent/>
+            case 'meeting':
+                return <ShowMeeting/>
+            default:
+                return <ShowTask task={activity}/>
+        }
+    }
 
     return (
-        <div>
-        {activity.map((activity)=>(
-            <div key={activity.id}>
-            <Card onClick={handleOpen}>
-                <CardHead>
-                    <CardTitle>{activity.titulo}</CardTitle>
-                    <Status color={activity.status}>{activity.status}</Status>
-                </CardHead>
-                <CardData>{activity.data}</CardData>
+            <div>
+            {activities.map((activity : TaskProps)=>(
+                <div key={activity.id}>
+                    <Card onClick={() => handleOpen(activity)}>
+                        <CardHead>
+                            <CardTitle>{activity.titulo}</CardTitle>
+                            <Status color={activity.status}>{activity.status}</Status>
+                        </CardHead>
+                        <CardData>{activity.data}</CardData>
 
-            </Card>
-
-            <Modal
-                open={open}
-                onClose={handleClose}
+                    </Card>
+                </div>
+            ))}
+                <Modal
+                open={openTask}
+                onClose={handleCloseTask}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
-            >
-                {handleOption(activity_name)}
-            
-            </Modal>
+                >
+                    {handleOption(activity_name, currentActivity)}
+                </Modal>    
             </div>
-        ))}
-    </div>
     )
-}
-
-function handleOption (activity_name : string) : any{
-    switch(activity_name){
-        case 'task':
-            return <ShowTask/>
-        case 'event':
-            return <ShowEvent/>
-        case 'meeting':
-            return <ShowMeeting/>
-        default:
-            return <ShowTask/>
-    }
 }
 
 export default Cards
