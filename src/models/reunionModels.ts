@@ -14,9 +14,17 @@ export const createReunion = async (reunion) => {
 
     const query = 'INSERT INTO Reunioes (id, data, titulo, horario, descricao, link, pauta) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
-    const [createdReunion] = await connection.execute(query, [id, data, titulo, horario, descricao, link, pauta]);
+    await connection.execute(query, [id, data, titulo, horario, descricao, link, pauta]);
 
-    return createdReunion;
+    return {
+        id,
+        data,
+        titulo,
+        horario,
+        descricao,
+        link,
+        pauta
+    };
 }
 
 export const deleteReunion = async (id) => {
@@ -29,7 +37,7 @@ export const deleteReunion = async (id) => {
 
 export const updateReunion = async (id, reunion) => {
     const { data, titulo, horario, descricao, link, pauta } = reunion;
-    const query = 'UPDATE Reunioes SET data = ?, titulo = ?, horario = ?, descricao = ?, status = ? WHERE id = ?';
+    const query = 'UPDATE Reunioes SET data = ?, titulo = ?, horario = ?, descricao = ?, link = ?, pauta = ? WHERE id = ?';
 
     const [updatedReunion] = await connection.execute(query, [data, titulo, horario, descricao, link, pauta, id]);
 

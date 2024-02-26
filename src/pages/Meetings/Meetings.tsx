@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import '../pagesStyles.css'
 import './meetings.css'
 import {MdAdd} from "react-icons/md";
@@ -19,7 +19,11 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ptBR } from '@mui/x-date-pickers/locales';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
 import dayjs, { Dayjs } from 'dayjs';
-import Cards from '../../components/Cards';
+import { Card, CardData, CardHead, CardTitle } from '../../components/Cards';
+import { api } from '../../services/api';
+import ShowMeeting from './ShowMeeting';
+import { MeetingsProps } from '../../types/meetings';
+import { useModalMeeting } from '../../context/modalMeeting';
 
 const theme = createTheme(
   {
@@ -49,11 +53,59 @@ const ButtonsBar = styled.div`
 `
 
 function Meetings() {
+  const [meetings, setMeetings] = useState<MeetingsProps[]>([])
+
+  const tituloRef = useRef<HTMLInputElement | null> (null)
+  const descricaoRef = useRef<HTMLTextAreaElement | null> (null)
+  const dataRef = useRef<HTMLInputElement | null> (null)
+  const horarioRef = useRef<HTMLInputElement | null> (null)
+  const linkRef = useRef<HTMLInputElement | null> (null)
+  const pautaRef = useRef<HTMLTextAreaElement | null> (null)
+
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
+  const { openMeeting, handleOpenMeeting, handleCloseMeeting } = useModalMeeting();
+
+  const [value, setValue] = React.useState<Dayjs | null>(dayjs('2024-02-26T15:30'));
+
+  const [currentActivity, setCurrentActivity] = useState<MeetingsProps>()
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  async function loadEvents() {
+    const response = await api.get('/reunioes');
+    setMeetings(response.data);
+  }
+
+  async function handleSubmit(event:FormEvent){
+    event.preventDefault()
+  
+    if(!tituloRef.current?.value || !dataRef.current?.value || !horarioRef.current?.value 
+      || !linkRef.current?.value) return
+
+    const response =  await api.post('/reunioes', {
+      'data': dataRef.current?.value, 
+      'titulo': tituloRef.current?.value,
+      'horario': horarioRef.current?.value,
+      'descricao': descricaoRef.current?.value,
+      'link' : linkRef.current?.value,
+      'pauta' : pautaRef.current?.value
+    });
+
+    setMeetings(allMeetings => [...allMeetings, response.data])
+    
+    setOpen(false)
+  }
+
+function handleOpenModal (activityItem : MeetingsProps) {
+    setCurrentActivity(activityItem);
+    handleOpenMeeting()
+} 
 
   return (
     <div className='container'>
@@ -62,7 +114,25 @@ function Meetings() {
       <div className='activities-container'>
 
         <div className='list-container'>
-            <Cards activity_name='meeting' activities={[]}/>
+              {meetings.map((meet : MeetingsProps)=>(
+                  <div key={meet.id}>
+                      <Card onClick={() => handleOpenModal(meet)}>
+                          <CardHead>
+                              <CardTitle>{meet.titulo}</CardTitle>
+                          </CardHead>
+                          <CardData>{meet.data}</CardData>
+
+                      </Card>
+                  </div>
+              ))}
+                  <Modal
+                  open={openMeeting}
+                  onClose={handleCloseMeeting}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                  >
+                      <ShowMeeting meet={currentActivity}/>
+                  </Modal>
         </div>
 
       </div>
@@ -76,22 +146,23 @@ function Meetings() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Input aria-label="Demo input" placeholder="Título" />
+        <form onSubmit={handleSubmit} id='register-task'>
+          <Input aria-label="Demo input" placeholder="Título" ref={tituloRef}/>
 
           <ThemeProvider theme={theme}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={['DatePicker', 'TimeField']}>
                 <MobileDatePicker label="Selecione uma data" slotProps={{ 
                   textField: {size: 'small', color: 'primary'}
-                  }}/>
+                  }} inputRef={dataRef} defaultValue={dayjs('2024-02-26')}/>
                 
-                <TimeField
+                <TimeField ampm={false}
                   label="Selecione um horário"
                   value={value}
                   onChange={(newValue) => setValue(newValue)}
                   slotProps={{ 
                     textField: {size: 'small', color: 'primary'}
-                    }}
+                    }} inputRef={horarioRef}
                 />
                 
               </DemoContainer>
@@ -99,16 +170,17 @@ function Meetings() {
             
           </ThemeProvider>
                       
-          <Textarea aria-label="empty textarea" maxRows={7} placeholder='Adicione uma pauta para a reunião...'/>
-          <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição..."/>
+          <Textarea aria-label="empty textarea" maxRows={7} placeholder='Adicione uma pauta para a reunião...' ref={pautaRef}/>
+          <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição..." ref={descricaoRef}/>
           
-          <input className='link-meeting' placeholder='Adicione um link para a reunião...'/>
+          <input className='link-meeting' placeholder='Adicione um link para a reunião...' ref={linkRef}/>
           
           <ButtonsBar>
               <Button id="btn-close" color='secondary' onClick={handleClose}>Cancelar</Button>
-              <Button color='primary'>Salvar</Button>
+              <Button color='primary' type='submit' form="register-task" value="Salvar">Salvar</Button>
             </ButtonsBar>
 
+          </form>
         </Box>
         
       </Modal>

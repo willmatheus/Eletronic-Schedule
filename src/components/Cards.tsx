@@ -8,7 +8,7 @@ import {useModalTask} from '../context/modalTask'
 
 import { Modal} from '@mui/joy';
 
-const Card = styled.button`
+export const Card = styled.button`
     background-color: white;
     padding-bottom: 10px;
     padding-top: 10px;
@@ -23,18 +23,18 @@ const Card = styled.button`
     margin-bottom: 10px;
 `
 
-const CardHead = styled.div`
+export const CardHead = styled.div`
     display: flex;
 `
 
-const CardData = styled.h3`
+export const CardData = styled.h3`
     float: left;
     font-size: 12px;
     color: #6B6B6B;
     margin-top: 10px;
 `
 
-const Status= styled.div`
+export const Status= styled.div`
     font-size: 12px;
     float: right;
     margin-left: auto; 
@@ -46,7 +46,7 @@ const Status= styled.div`
     padding-right: 15px;
 `
 
-const CardTitle = styled.h2`
+export const CardTitle = styled.h2`
     font-size: 20px;
     color: black;
     font-weight: normal;
@@ -78,19 +78,6 @@ function Cards({activity_name, activities} : CardsProps) {
         setCurrentActivity(activityItem);
         handleOpenTask()
     } 
-    function handleOption (activity_name : string, activity: TaskProps) : any{
-        switch(activity_name){
-            case 'task':
-                return <ShowTask task= {activity}/>
-            case 'event':
-                return <ShowEvent/>
-            case 'meeting':
-                return <ShowMeeting/>
-            default:
-                return <ShowTask task={activity}/>
-        }
-    }
-
     return (
             <div>
             {activities.map((activity : TaskProps)=>(
@@ -111,7 +98,7 @@ function Cards({activity_name, activities} : CardsProps) {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
                 >
-                    {handleOption(activity_name, currentActivity)}
+                    <ShowTask task={currentActivity}/>
                 </Modal>    
             </div>
     )

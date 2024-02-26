@@ -101,7 +101,7 @@ type ShowTaskProps = {
 }
 
 function ShowTask({task} : ShowTaskProps) {
-  //Puxar do banco a data e o horário
+  
   const [hour, setHour] = React.useState<Dayjs | null>(dayjs(`2024-02-19T${task.horario}`));
   const [date, setDate] = React.useState<Dayjs | null>(dayjs(task.data));
 
@@ -110,24 +110,41 @@ function ShowTask({task} : ShowTaskProps) {
 
   const { handleCloseTask } = useModalTask();
 
+  function handleStatus(value){
+    if(value == 'pendente') return false
+    else return true
+  }
+
+  function convertStatus(value){
+    if(value) return "concluido"
+    else return "pendente"
+  }
+
   const tituloRef = useRef<HTMLInputElement | null> (null)
   const descricaoRef = useRef<HTMLTextAreaElement | null> (null)
   const dataRef = useRef<HTMLInputElement | null> (null)
   const horarioRef = useRef<HTMLInputElement | null> (null)
+  const [status, setStatus] = React.useState(handleStatus(task.status));
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStatus(event.target.checked);
+  };
 
   //Update a task
   async function handleSubmit(event:FormEvent){
     event.preventDefault()
 
     if(!tituloRef.current?.value || !dataRef.current?.value || !horarioRef.current?.value) return
-  
+    
+    const statusPut = convertStatus(status)
+
     try{
       const response =  await api.put(`/tarefas/${task.id}`, {
     "data": dataRef.current?.value, 
     "titulo": tituloRef.current?.value,
     "horario": horarioRef.current?.value,
     "descricao": descricaoRef.current?.value,
-    "status": task.status
+    "status": statusPut
     });
     }catch(err){
       console.log(err)
@@ -137,16 +154,14 @@ function ShowTask({task} : ShowTaskProps) {
   }
 
   async function handleRemove() {
+    
     try{
-      await api.delete("/tarefas", {
-        params:{
-          id: task.id,
-        }
-      })
+      await api.delete(`/tarefas/${task.id}`)
     }catch(err){
       console.log(err)
     }
     handleCloseDelete()
+    handleCloseTask()
   }
 
   //const [file, setFile] = useState<File | null>(null);
@@ -165,7 +180,11 @@ function ShowTask({task} : ShowTaskProps) {
         <form onSubmit={handleSubmit} id='edit-task'>
           <BoxHeader>
             {/*Status da Tarefa através do checkbox*/}
-            <Checkbox aria-label ='Checkbox demo' sx={{ padding : '0px'} }/>
+            <Checkbox
+            checked={status}
+            onChange={handleChange}
+            inputProps={{ 'aria-label': 'controlled' }}
+            />
 
             <Input aria-label="Demo input" placeholder="Título" defaultValue={task.titulo} ref={tituloRef}/>
             <ModalClose variant="plain" sx={{ m: 1 }} />

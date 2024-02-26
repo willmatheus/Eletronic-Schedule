@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import '../pagesStyles.css'
 import './events_activity.css'
 import {MdAdd, MdLocationOn, MdOutlinePeople } from "react-icons/md";
@@ -20,6 +20,9 @@ import { ptBR } from '@mui/x-date-pickers/locales';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
 import dayjs, { Dayjs } from 'dayjs';
 import Cards from '../../components/Cards';
+import { EventsProps } from '../../types/events';
+import { useModalEvent } from '../../context/modalEvent';
+import { api } from '../../services/api';
 
 const theme = createTheme(
   {
@@ -49,11 +52,33 @@ const ButtonsBar = styled.div`
 `
 
 function Events_Activity() {
+  const [events, setEvents] = useState<EventsProps[]>([])
+
+  const tituloRef = useRef<HTMLInputElement | null> (null)
+  const descricaoRef = useRef<HTMLTextAreaElement | null> (null)
+  const dataRef = useRef<HTMLInputElement | null> (null)
+  const horarioRef = useRef<HTMLInputElement | null> (null)
+  const localRef = useRef<HTMLInputElement | null> (null)
+  const nConvidadosRef = useRef<HTMLTextAreaElement | null> (null)
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const { openEvent, handleOpenEvent, handleCloseEvent } = useModalEvent();
+
   const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
+
+  const [currentActivity, setCurrentActivity] = useState<EventsProps>()
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  async function loadEvents() {
+    const response = await api.get('/eventos');
+    setEvents(response.data);
+  }
 
   return (
     <div className='container'>

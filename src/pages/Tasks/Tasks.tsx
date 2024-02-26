@@ -129,7 +129,7 @@ function Tasks() {
                   <DemoContainer components={['DatePicker', 'TimeField']}>
                     <MobileDatePicker label="Selecione uma data" slotProps={{ 
                       textField: {size: 'small', color: 'primary'}
-                      }} inputRef={dataRef} defaultValue={dayjs('2024-02-19')}/>
+                      }} inputRef={dataRef} defaultValue={dayjs('2024-02-26')}/>
                     
                     <TimeField ampm={false}
                       label="Selecione um horário"

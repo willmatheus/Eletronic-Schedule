@@ -5,7 +5,7 @@ import { FaTasks } from "react-icons/fa";
 
 const side_bar_pages = [
     {
-        title: "Calendário",
+        title: "Agenda Semanal",
         path: "/",
         icon: <TbCalendar size={22} color="#000"/>
     },

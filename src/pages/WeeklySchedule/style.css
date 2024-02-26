@@ -1,0 +1,42 @@
+.container{
+    width: 100%;
+    height: 100%;
+    padding-top: 50px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 0px;
+    overflow: auto;
+}
+
+.container .title{
+    background-color: #5F22D9;
+    width: 100%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 40px;
+}
+
+h1{
+    color: white;
+    font-weight: 500;
+}
+
+p{
+    color: white;
+    font-size: 20px;
+}
+
+h3{
+    color: black;
+    font-size: 14px;
+    font-weight: normal;
+}
+.list-container{
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.activities-container{
+    padding-left: 40px;
+    padding-right: 40px;
+}
