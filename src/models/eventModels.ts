@@ -16,7 +16,15 @@ export const createEvent = async (event) => {
 
     const [createdEvent] = await connection.execute(query, [id, data, titulo, horario, descricao, local, numeroDeConvidados]);
 
-    return createdEvent;
+    return {
+        id,
+        data,
+        titulo,
+        horario,
+        descricao,
+        local,
+        numeroDeConvidados
+    };
 }
 
 export const deleteEvent = async (id) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import '../pagesStyles.css'
 import './events_activity.css'
 import {MdAdd, MdLocationOn, MdOutlinePeople } from "react-icons/md";
@@ -19,10 +19,12 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ptBR } from '@mui/x-date-pickers/locales';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
 import dayjs, { Dayjs } from 'dayjs';
-import Cards from '../../components/Cards';
+import Cards, { Card, CardData, CardHead, CardTitle } from '../../components/Cards';
 import { EventsProps } from '../../types/events';
 import { useModalEvent } from '../../context/modalEvent';
 import { api } from '../../services/api';
+import ShowEvent from './ShowEvent';
+import { Snackbar, SnackbarOrigin } from '@mui/material';
 
 const theme = createTheme(
   {
@@ -50,6 +52,9 @@ const ButtonsBar = styled.div`
   padding-top: 15px;
   float: right;
 `
+interface Snack extends SnackbarOrigin {
+  open: boolean;
+}
 
 function Events_Activity() {
   const [events, setEvents] = useState<EventsProps[]>([])
@@ -59,9 +64,9 @@ function Events_Activity() {
   const dataRef = useRef<HTMLInputElement | null> (null)
   const horarioRef = useRef<HTMLInputElement | null> (null)
   const localRef = useRef<HTMLInputElement | null> (null)
-  const nConvidadosRef = useRef<HTMLTextAreaElement | null> (null)
+  const nConvidadosRef = useRef<HTMLInputElement | null> (null)
 
-  const [open, setOpen] = React.useState(false);
+  const [openModal, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -70,6 +75,23 @@ function Events_Activity() {
   const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
 
   const [currentActivity, setCurrentActivity] = useState<EventsProps>()
+
+  const [snack, setSnack] = useState<Snack>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal, open } = snack;
+  
+  const [message, setMessage] = useState<string>('Preencha o título')
+  
+  const handleCloseSnack = () => {
+    setSnack({ ...snack, open: false });
+  };
+  
+  const handleNotify = () =>{
+    setSnack({ ...snack, open: true });
+  }
 
   useEffect(() => {
     loadEvents();
@@ -80,6 +102,45 @@ function Events_Activity() {
     setEvents(response.data);
   }
 
+  async function handleSubmit(event:FormEvent){
+
+    event.preventDefault()
+  
+    if(!tituloRef.current?.value){
+        setMessage('Preencha o título!')
+        handleCloseSnack()
+        handleNotify()
+    }
+    else if (!localRef.current?.value){
+      setMessage('Preencha o local!')
+      handleCloseSnack()
+      handleNotify()
+    }
+    
+    else{
+      const numeroDeConvidados = nConvidadosRef.current?.value ? parseInt(nConvidadosRef.current?.value, 10) : 0
+
+      const response =  await api.post('/eventos', {
+        'data': dataRef.current?.value, 
+        'titulo': tituloRef.current?.value,
+        'horario': horarioRef.current?.value,
+        'descricao': descricaoRef.current?.value,
+        'local' : localRef.current?.value,
+        'numeroDeConvidados' : numeroDeConvidados
+      });
+  
+      setEvents(allEvents => [...allEvents, response.data])
+      
+      setOpen(false)
+    }
+    
+  }
+
+  function handleOpenModal (activityItem : EventsProps) {
+    setCurrentActivity(activityItem);
+    handleOpenEvent()
+} 
+
   return (
     <div className='container'>
       <div className='title'><h1>Eventos</h1></div>
@@ -87,58 +148,85 @@ function Events_Activity() {
       <div className='activities-container'>
 
         <div className='list-container'>
-            <Cards activity_name='event' activities={[]}/>
+            {events.map((event : EventsProps)=>(
+                  <div key={event.id}>
+                      <Card onClick={() => handleOpenModal(event)}>
+                          <CardHead>
+                              <CardTitle>{event.titulo}</CardTitle>
+                          </CardHead>
+                          <CardData>{event.data}</CardData>
+
+                      </Card>
+                  </div>
+              ))}
+                  <Modal
+                  open={openEvent}
+                  onClose={handleCloseEvent}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                  >
+                      <ShowEvent event={currentActivity}/>
+                  </Modal>
         </div>
 
       </div>
 
       <FloatingButton onClick={handleOpen}><MdAdd size={30}/></FloatingButton>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleCloseSnack}
+        message={message}
+        key={vertical + horizontal}
+      />
 
       <Modal
-        open={open}
+        open={openModal}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Input aria-label="Demo input" placeholder="Título" />
-          <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição…" color='primary'/>
-          
-          <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker', 'TimeField']}>
-                <MobileDatePicker label="Selecione uma data" slotProps={{ 
-                  textField: {size: 'small', color: 'primary'}
-                  }}/>
-                
-                <TimeField
-                  label="Selecione um horário"
-                  value={value}
-                  onChange={(newValue) => setValue(newValue)}
-                  slotProps={{ 
-                    textField: {size: 'small', color: 'primary'}
-                    }}
-                />
-                
-              </DemoContainer>
-            </LocalizationProvider>
+          <form onSubmit={handleSubmit} id='register-event'>
+            <Input aria-label="Demo input" placeholder="Título" ref={tituloRef}/>
+            <Textarea aria-label="empty textarea" maxRows={7} placeholder="Adicione uma descrição…" color='primary' ref={descricaoRef}/>
             
-          </ThemeProvider>
+            <ThemeProvider theme={theme}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker', 'TimeField']}>
+                  <MobileDatePicker label="Selecione uma data" slotProps={{ 
+                    textField: {size: 'small', color: 'primary'}
+                    }} inputRef={dataRef} defaultValue={dayjs('2024-02-26')} format="DD/MM/YYYY"/>
+                  
+                  <TimeField ampm={false}
+                    label="Selecione um horário"
+                    value={value}
+                    onChange={(newValue) => setValue(newValue)}
+                    slotProps={{ 
+                      textField: {size: 'small', color: 'primary'}
+                      }} inputRef={horarioRef}
+                  />
+                  
+                </DemoContainer>
+              </LocalizationProvider>
+              
+            </ThemeProvider>
 
-          <div className='location-container'>
-            <MdLocationOn size={30} color='#5F22D9' className='location-icon'/>
-            <input className='location-description' placeholder='Adicione uma localização...'/>
+            <div className='location-container'>
+              <MdLocationOn size={30} color='#5F22D9' className='location-icon'/>
+              <input className='location-description' placeholder='Adicione uma localização...' ref={localRef}/>
 
-            <p className='text-guests'>Nº convidados</p>
-            <MdOutlinePeople size={30} color='#5F22D9' className='guests-icon'/>
-            <input className='input-guests' placeholder='0' type='number'/>
-          </div>
-          
-          <ButtonsBar>
-              <Button id="btn-close" color='secondary' onClick={handleClose}>Cancelar</Button>
-              <Button color='primary'>Salvar</Button>
-            </ButtonsBar>
+              <p className='text-guests'>Nº convidados</p>
+              <MdOutlinePeople size={30} color='#5F22D9' className='guests-icon'/>
+              <input className='input-guests' placeholder='0' type='number' ref={nConvidadosRef}/>
+            </div>
+            
+            <ButtonsBar>
+                <Button id="btn-close" color='secondary' onClick={handleClose}>Cancelar</Button>
+                <Button color='primary' type='submit' form="register-event">Salvar</Button>
+              </ButtonsBar>
 
+            </form>
         </Box>
         
       </Modal>

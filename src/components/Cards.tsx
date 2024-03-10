@@ -57,7 +57,7 @@ const handleColorStatus: (color : string | any) => string =
         switch(color){
             case "pendente":
                 return "#C82B28"
-            case "concluido":
+            case "concluida":
                 return "#28C842"
             default:
                 return "#C82B28"

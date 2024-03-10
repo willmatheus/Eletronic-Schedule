@@ -102,8 +102,15 @@ type ShowTaskProps = {
 
 function ShowTask({task} : ShowTaskProps) {
   
+  function formatData(data: string): string {
+    const [dia, mes, ano] = data.split('/')
+    return `${mes}/${dia}/${ano}`
+  }
+
+  const taskData = formatData(task.data)
+
   const [hour, setHour] = React.useState<Dayjs | null>(dayjs(`2024-02-19T${task.horario}`));
-  const [date, setDate] = React.useState<Dayjs | null>(dayjs(task.data));
+  const [date, setDate] = React.useState<Dayjs | null>(dayjs(taskData));
 
   const [open, setOpen] = React.useState<boolean>(false);
   const handleCloseDelete = () => setOpen(false)
@@ -196,7 +203,7 @@ function ShowTask({task} : ShowTaskProps) {
                     <MobileDatePicker label="Selecione uma data" slotProps={{ 
                       textField: {size: 'small', color: 'primary'}
                       }} value={date}
-                      onChange={(newValue) => setDate(newValue)} inputRef={dataRef}/>
+                      onChange={(newValue) => setDate(newValue)} inputRef={dataRef} format="DD/MM/YYYY"/>
                     
                     <TimeField ampm={false}
                       label="Selecione um horário"

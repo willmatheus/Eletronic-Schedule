@@ -24,6 +24,7 @@ import { api } from '../../services/api';
 import ShowMeeting from './ShowMeeting';
 import { MeetingsProps } from '../../types/meetings';
 import { useModalMeeting } from '../../context/modalMeeting';
+import { Snackbar, SnackbarOrigin } from '@mui/material';
 
 const theme = createTheme(
   {
@@ -52,6 +53,10 @@ const ButtonsBar = styled.div`
   float: right;
 `
 
+interface Snack extends SnackbarOrigin {
+  open: boolean;
+}
+
 function Meetings() {
   const [meetings, setMeetings] = useState<MeetingsProps[]>([])
 
@@ -63,7 +68,7 @@ function Meetings() {
   const pautaRef = useRef<HTMLTextAreaElement | null> (null)
 
 
-  const [open, setOpen] = React.useState(false);
+  const [openModal, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -72,6 +77,23 @@ function Meetings() {
   const [value, setValue] = React.useState<Dayjs | null>(dayjs('2024-02-26T15:30'));
 
   const [currentActivity, setCurrentActivity] = useState<MeetingsProps>()
+
+  const [snack, setSnack] = useState<Snack>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal, open } = snack;
+  
+  const [message, setMessage] = useState<string>('Preencha o título')
+  
+  const handleCloseSnack = () => {
+    setSnack({ ...snack, open: false });
+  };
+  
+  const handleNotify = () =>{
+    setSnack({ ...snack, open: true });
+  }
 
   useEffect(() => {
     loadEvents();
@@ -85,21 +107,33 @@ function Meetings() {
   async function handleSubmit(event:FormEvent){
     event.preventDefault()
   
-    if(!tituloRef.current?.value || !dataRef.current?.value || !horarioRef.current?.value 
-      || !linkRef.current?.value) return
-
-    const response =  await api.post('/reunioes', {
-      'data': dataRef.current?.value, 
-      'titulo': tituloRef.current?.value,
-      'horario': horarioRef.current?.value,
-      'descricao': descricaoRef.current?.value,
-      'link' : linkRef.current?.value,
-      'pauta' : pautaRef.current?.value
-    });
-
-    setMeetings(allMeetings => [...allMeetings, response.data])
-    
-    setOpen(false)
+    if(!tituloRef.current?.value){
+      setMessage('Preencha o título!')
+      handleCloseSnack()
+      handleNotify()
+    }else if(!pautaRef.current?.value){
+      setMessage('Preencha a pauta')
+      handleCloseSnack()
+      handleNotify()
+    }else if(!linkRef.current?.value){
+      setMessage('Preencha o link')
+      handleCloseSnack()
+      handleNotify()
+    }
+    else{
+      const response =  await api.post('/reunioes', {
+        'data': dataRef.current?.value, 
+        'titulo': tituloRef.current?.value,
+        'horario': horarioRef.current?.value,
+        'descricao': descricaoRef.current?.value,
+        'link' : linkRef.current?.value,
+        'pauta' : pautaRef.current?.value
+      });
+  
+      setMeetings(allMeetings => [...allMeetings, response.data])
+      
+      setOpen(false)
+    }
   }
 
 function handleOpenModal (activityItem : MeetingsProps) {
@@ -139,8 +173,16 @@ function handleOpenModal (activityItem : MeetingsProps) {
 
       <FloatingButton onClick={handleOpen}><MdAdd size={30}/></FloatingButton>
 
-      <Modal
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
         open={open}
+        onClose={handleCloseSnack}
+        message={message}
+        key={vertical + horizontal}
+      />
+
+      <Modal
+        open={openModal}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -154,7 +196,7 @@ function handleOpenModal (activityItem : MeetingsProps) {
               <DemoContainer components={['DatePicker', 'TimeField']}>
                 <MobileDatePicker label="Selecione uma data" slotProps={{ 
                   textField: {size: 'small', color: 'primary'}
-                  }} inputRef={dataRef} defaultValue={dayjs('2024-02-26')}/>
+                  }} inputRef={dataRef} defaultValue={dayjs('2024-02-26')} format="DD/MM/YYYY"/>
                 
                 <TimeField ampm={false}
                   label="Selecione um horário"

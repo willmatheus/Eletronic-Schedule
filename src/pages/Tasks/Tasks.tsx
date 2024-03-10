@@ -23,8 +23,10 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { ptBR } from '@mui/x-date-pickers/locales';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
 import dayjs, { Dayjs } from 'dayjs';
-import { set } from 'date-fns';
 import { ModalTaskProvider } from '../../context/modalTask';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import Fade from '@mui/material/Fade';
+import { TransitionProps } from '@mui/material/transitions';
 
 const theme = createTheme(
   {
@@ -53,6 +55,10 @@ const ButtonsBar = styled.div`
   float: right;
 `
 
+interface Snack extends SnackbarOrigin {
+  open: boolean;
+}
+
 function Tasks() {
 
   const [tasks, setTasks] = useState<TaskProps[]>([])
@@ -62,13 +68,25 @@ function Tasks() {
   const dataRef = useRef<HTMLInputElement | null> (null)
   const horarioRef = useRef<HTMLInputElement | null> (null)
 
-  const [open, setOpen] = useState(false);
+  const [openModal, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const [snack, setSnack] = useState<Snack>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal, open } = snack;
+
+
+  const handleCloseSnack = () => {
+    setSnack({ ...snack, open: false });
+  };
+
   useEffect(() => {
     loadTasks();
-  }, []);
+  }, [tasks]);
 
   async function loadTasks() {
     const response = await api.get('/tarefas');
@@ -76,22 +94,29 @@ function Tasks() {
     //console.log(response.data);
   }
 
+  const handleNotify = () =>{
+    setSnack({ ...snack, open: true });
+  }
+
   async function handleSubmit(event:FormEvent){
     event.preventDefault()
 
-    if(!tituloRef.current?.value || !dataRef.current?.value || !horarioRef.current?.value) return
+    if(!tituloRef.current?.value){
+      handleNotify()
+    }
 
-
-    const response =  await api.post('/tarefas', {
-      'data': dataRef.current?.value, 
-      'titulo': tituloRef.current?.value,
-      'horario': horarioRef.current?.value,
-      'descricao': descricaoRef.current?.value
-    });
-
-    setTasks(allTasks => [...allTasks, response.data])
-
-    setOpen(false)
+    else{
+      const response =  await api.post('/tarefas', {
+        'data': dataRef.current?.value, 
+        'titulo': tituloRef.current?.value,
+        'horario': horarioRef.current?.value,
+        'descricao': descricaoRef.current?.value
+      });
+  
+      setTasks(allTasks => [...allTasks, response.data])
+  
+      setOpen(false)
+    }
   }
 
   const [value, setValue] = useState<Dayjs | null>(dayjs('2024-02-26T15:30'));
@@ -113,8 +138,16 @@ function Tasks() {
 
       <FloatingButton onClick={handleOpen}><MdAdd size={30}/></FloatingButton>
 
-      <Modal
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
         open={open}
+        onClose={handleCloseSnack}
+        message={"Preencha o título"}
+        key={vertical + horizontal}
+      />
+
+      <Modal
+        open={openModal}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -129,7 +162,7 @@ function Tasks() {
                   <DemoContainer components={['DatePicker', 'TimeField']}>
                     <MobileDatePicker label="Selecione uma data" slotProps={{ 
                       textField: {size: 'small', color: 'primary'}
-                      }} inputRef={dataRef} defaultValue={dayjs('2024-02-26')}/>
+                      }} inputRef={dataRef} defaultValue={dayjs('2024-02-26')} format="DD/MM/YYYY"/>
                     
                     <TimeField ampm={false}
                       label="Selecione um horário"
@@ -151,6 +184,7 @@ function Tasks() {
             </ButtonsBar>
 
             </form>
+
         </Box>
         
       </Modal>

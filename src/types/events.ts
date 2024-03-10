@@ -5,5 +5,5 @@ export type EventsProps = {
     horario: string;
     descricao: string;
     local: string;
-    nConvidados: number;
+    numeroDeConvidados: number;
 }

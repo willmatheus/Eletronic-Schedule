@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { FormEvent, useRef, useState } from 'react'
 import './events_activity.css'
 import styled from 'styled-components';
 import { MdOutlineDelete, MdLocationOn, MdOutlinePeople} from "react-icons/md";
@@ -25,6 +25,9 @@ import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import DialogActions from '@mui/joy/DialogActions';
 import ModalDialog from '@mui/joy/ModalDialog';
+import { EventsProps } from '../../types/events';
+import { useModalEvent } from '../../context/modalEvent';
+import { api } from '../../services/api';
 
 const theme = createTheme(
   {
@@ -76,68 +79,123 @@ const Delete_styled = styled.button`
   padding-bottom: 3px;
 `
 
-function ShowEvent() {
-    
-  const description = "Lorem ipsum dolor sit amet. Id error maiores eum distinctio dolorum est cumque officiis vel culpa minima et consectetur nisi. Et sint nihil cum voluptate ratione a voluptas dicta et corrupti consequatur ut illo praesentium est amet recusandae aut pariatur iure. Eos earum alias rem cupiditate sequi aut nihil necessitatibus! Non placeat voluptas sit corporis ipsum At deleniti cumque At maiores molestiae eos eligendi dicta et minima assumenda qui expedita mollitia."
+type ShowEventProps = {
+  event: EventsProps;
+}
 
-  //Puxar do banco a data e o horário
-  const [hour, setHour] = React.useState<Dayjs | null>(dayjs('2024-02-19T15:00'));
-  const [date, setDate] = React.useState<Dayjs | null>(dayjs('2024-02-19'));
+function ShowEvent({event} : ShowEventProps) {
+  function formatData(data: string): string {
+    const [dia, mes, ano] = data.split('/')
+    return `${mes}/${dia}/${ano}`
+  }
+
+  const eventData = formatData(event.data)
+
+  const [hour, setHour] = React.useState<Dayjs | null>(dayjs(`2024-02-19T${event.horario}`));
+  const [date, setDate] = React.useState<Dayjs | null>(dayjs(eventData));
 
   const [open, setOpen] = React.useState<boolean>(false);
+  const handleCloseDelete = () => setOpen(false)
+
+  const { handleCloseEvent } = useModalEvent();
+
+  const tituloRef = useRef<HTMLInputElement | null> (null)
+  const descricaoRef = useRef<HTMLTextAreaElement | null> (null)
+  const dataRef = useRef<HTMLInputElement | null> (null)
+  const horarioRef = useRef<HTMLInputElement | null> (null)
+  const localRef = useRef<HTMLInputElement | null> (null)
+  const numeroDeConvidadosRef = useRef<HTMLInputElement | null> (null)
+
+  async function handleSubmit(e:FormEvent){
+    e.preventDefault()
+
+    if(!tituloRef.current?.value || !dataRef.current?.value || !horarioRef.current?.value || 
+      !localRef.current?.value) return
+    
+    const nConvidados = parseInt(numeroDeConvidadosRef.current?.value, 10);
+
+    try{
+      const response =  await api.put(`/eventos/${event.id}`, {
+        "data": dataRef.current?.value, 
+        "titulo": tituloRef.current?.value,
+        "horario": horarioRef.current?.value,
+        "descricao": descricaoRef.current?.value,
+        "local": localRef.current?.value,
+        "numeroDeConvidados": nConvidados
+      });
+    }catch(err){
+      console.log(err)
+    }
+
+    handleCloseEvent()
+  }
+
+  async function handleRemove() {
+    
+    try{
+      await api.delete(`/eventos/${event.id}`)
+    }catch(err){
+      console.log(err)
+    }
+    handleCloseDelete()
+    handleCloseEvent()
+  }
 
   return (
     <Sheet sx={style}>
-      {/*Tela de visualizar Card/ Alterar tarefa*/}
-      <BoxHeader>
 
-        {/*Título da tarefa em default value*/}
-        <Input aria-label="Demo input" placeholder="Título" defaultValue={"Festa de natal na minha casa"} />
-        <ModalClose variant="plain" sx={{ m: 1 }} />
-      </BoxHeader>
+      <form onSubmit={handleSubmit} id='edit-event'>
+        {/*Tela de visualizar Card/ Alterar tarefa*/}
+        <BoxHeader>
 
-      <div className='location-container'>
-            <MdLocationOn size={30} color='#5F22D9' className='location-icon'/>
-            <input className='location-description' placeholder='Adicione uma localização...' defaultValue={"Avenida Penetração, 45"}/>
+          {/*Título da tarefa em default value*/}
+          <Input aria-label="Demo input" placeholder="Título" defaultValue={event.titulo} ref={tituloRef}/>
+        </BoxHeader>
 
-            <p className='text-guests'>Nº convidados</p>
-            <MdOutlinePeople size={30} color='#5F22D9' className='guests-icon'/>
-            <input className='input-guests' placeholder='0' type='number' defaultValue={4}/>
-      </div>
+        <div className='location-container'>
+              <MdLocationOn size={30} color='#5F22D9' className='location-icon'/>
+              <input className='location-description' placeholder='Adicione uma localização...' defaultValue={event.local} ref={localRef}/>
 
-      <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker', 'TimeField']}>
-                {/*Data da tarefa em value*/}
-                <MobileDatePicker label="Selecione uma data" slotProps={{ 
-                  textField: {size: 'small', color: 'primary'}
-                  }} value={date}
-                  onChange={(newValue) => setDate(newValue)}/>
-                
-                {/*Hora da tarefa em value*/}
-                <TimeField
-                  label="Selecione um horário"
-                  value={hour}
-                  onChange={(newValue) => setHour(newValue)}
-                  slotProps={{ 
+              <p className='text-guests'>Nº convidados</p>
+              <MdOutlinePeople size={30} color='#5F22D9' className='guests-icon'/>
+              <input className='input-guests' placeholder='0' type='number' defaultValue={event.numeroDeConvidados} ref={numeroDeConvidadosRef}/>
+        </div>
+
+        <ThemeProvider theme={theme}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker', 'TimeField']}>
+                  {/*Data da tarefa em value*/}
+                  <MobileDatePicker label="Selecione uma data" slotProps={{ 
                     textField: {size: 'small', color: 'primary'}
-                    }}
-                />
-                
-              </DemoContainer>
-            </LocalizationProvider>
-      </ThemeProvider>
-      
-      {/*Texto da descrição, mudar o campo default value*/}
-      <Textarea aria-label="empty textarea" maxRows={7} defaultValue={description} color='primary'/>
-      
-      {/*file && (
-        <FileDiv>
-            <FaRegFileAlt size={30}/>
-            <p>{file.name}</p>
-            <MdClose />
-        </FileDiv>
-      )*/}
+                    }} value={date}
+                    onChange={(newValue) => setDate(newValue)} inputRef={dataRef} format="DD/MM/YYYY"/>
+                  
+                  {/*Hora da tarefa em value*/}
+                  <TimeField ampm={false}
+                    label="Selecione um horário"
+                    value={hour}
+                    onChange={(newValue) => setHour(newValue)}
+                    slotProps={{ 
+                      textField: {size: 'small', color: 'primary'}
+                      }} inputRef={horarioRef}
+                  />
+                  
+                </DemoContainer>
+              </LocalizationProvider>
+        </ThemeProvider>
+        
+        {/*Texto da descrição, mudar o campo default value*/}
+        <Textarea aria-label="empty textarea" maxRows={7} defaultValue={event.descricao} ref={descricaoRef} color='primary'/>
+        
+        {/*file && (
+          <FileDiv>
+              <FaRegFileAlt size={30}/>
+              <p>{file.name}</p>
+              <MdClose />
+          </FileDiv>
+        )*/}
+
+      </form>
 
       {/*Barra de botões no fim da janela*/}
       <ButtonsBar>
@@ -161,7 +219,7 @@ function ShowEvent() {
                       Você deseja excluir esse evento?
                     </DialogContent>
                     <DialogActions>
-                      <Button color="primary">
+                      <Button color="primary" onClick={() => handleRemove()}>
                         Excluir
                       </Button>
                       {/*Adicionar Onclick para apagar do banco*/}
@@ -175,8 +233,8 @@ function ShowEvent() {
             </IconsOptions>
             <ButtonSaveContainer>
 
-                {/*Botão Salvar*/}
-                <Button color='primary'>Salvar</Button>
+                <Button color='secondary' onClick={() => handleCloseEvent()}>Cancelar</Button>
+                <Button color='primary' type='submit' form="edit-event">Salvar</Button>
 
             </ButtonSaveContainer>
       </ButtonsBar>

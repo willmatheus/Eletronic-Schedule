@@ -31,6 +31,7 @@ h3{
     font-size: 14px;
     font-weight: normal;
 }
+
 .list-container{
     padding-top: 20px;
     padding-bottom: 10px;
@@ -39,4 +40,29 @@ h3{
 .activities-container{
     padding-left: 40px;
     padding-right: 40px;
+}
+
+.activity-list-container{
+    overflow: auto;
+    padding-top: 10px;
+    height: 200px;
+    padding-right: 5px;
+    text-align: center;
+}
+
+.activity-list-container::-webkit-scrollbar {
+    width: 10px;
+    height: auto;    
+  }
+  
+  .activity-list-container::-webkit-scrollbar-thumb {   
+    border-radius: 20px;       
+    border-radius: 7px;
+    background: #51D6CA;
+  }
+
+.activity-empty{
+    color: white;
+    font-size: 16px;
+    line-height: 180px;
 }

@@ -82,11 +82,15 @@ type ShowMeetingProps = {
 }
 
 function ShowMeeting({meet} : ShowMeetingProps) {
-    
-  const description = "Lorem ipsum dolor sit amet. Id error maiores eum distinctio dolorum est cumque officiis vel culpa minima et consectetur nisi. Et sint nihil cum voluptate ratione a voluptas dicta et corrupti consequatur ut illo praesentium est amet recusandae aut pariatur iure. Eos earum alias rem cupiditate sequi aut nihil necessitatibus! Non placeat voluptas sit corporis ipsum At deleniti cumque At maiores molestiae eos eligendi dicta et minima assumenda qui expedita mollitia."
+  function formatData(data: string): string {
+    const [dia, mes, ano] = data.split('/')
+    return `${mes}/${dia}/${ano}`
+  }
+
+  const meetingData = formatData(meet.data)
 
   const [hour, setHour] = React.useState<Dayjs | null>(dayjs(`2024-02-19T${meet.horario}`));
-  const [date, setDate] = React.useState<Dayjs | null>(dayjs(meet.data));
+  const [date, setDate] = React.useState<Dayjs | null>(dayjs(meetingData));
 
   const [open, setOpen] = useState<boolean>(false);
   const handleCloseDelete = () => setOpen(false)
@@ -150,7 +154,7 @@ function ShowMeeting({meet} : ShowMeetingProps) {
                   <MobileDatePicker label="Selecione uma data" slotProps={{ 
                     textField: {size: 'small', color: 'primary'}
                     }} value={date}
-                    onChange={(newValue) => setDate(newValue)} inputRef={dataRef}/>
+                    onChange={(newValue) => setDate(newValue)} inputRef={dataRef} format="DD/MM/YYYY"/>
                   
                   {/*Hora da tarefa em value*/}
                   <TimeField ampm={false}
